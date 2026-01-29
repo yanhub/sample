@@ -1,0 +1,25 @@
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: sample-mongodb
+    ports:
+      - ${DB_PORT:-27017}:27017
+    volumes:
+      - sample_mongodb_data:/data/db
+
+  app:
+    image: node:20-alpine
+    container_name: sample-node-app
+    working_dir: /app
+    ports:
+      - ${APP_PORT:-3000}:3000
+    env_file:
+      - .env.local
+    depends_on:
+      - mongodb
+    volumes:
+      - .:/app
+    command: npm start
+
+volumes:
+  sample_mongodb_data:
